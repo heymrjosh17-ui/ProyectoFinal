@@ -167,6 +167,45 @@ public class Aportes {
         return s.replace("\\;", ";").replace("\\\\", "\\");
     }
 
+    // --- Getters y setDatos para integracion con GestionDatos ---
+    public static int[] getCodigosPersona() {
+        return codigosPersona;
+    }
+
+    public static double[] getDiezmos() {
+        return diezmos;
+    }
+
+    public static double[] getOfrendas() {
+        return ofrendas;
+    }
+
+    public static String[] getFechas() {
+        return fechas;
+    }
+
+    public static String[] getDias() {
+        return dias;
+    }
+
+    public static String[] getIglesias() {
+        return iglesias;
+    }
+
+    public static int getCont() {
+        return cont;
+    }
+
+    public static void setDatos(int[] codigosIn, double[] diezmosIn, double[] ofrendasIn, String[] fechasIn, String[] diasIn, String[] iglesiasIn, int contIn) {
+        codigosPersona = (codigosIn != null) ? codigosIn : new int[100];
+        diezmos = (diezmosIn != null) ? diezmosIn : new double[100];
+        ofrendas = (ofrendasIn != null) ? ofrendasIn : new double[100];
+        fechas = (fechasIn != null) ? fechasIn : new String[100];
+        dias = (diasIn != null) ? diasIn : new String[100];
+        iglesias = (iglesiasIn != null) ? iglesiasIn : new String[100];
+        cont = contIn;
+    }
+
     //MENÚ
     public static void menuAporte() {
         int opcion;
