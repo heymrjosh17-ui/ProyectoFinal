@@ -17,6 +17,9 @@ public class Index {
     }
 
     public static void salir() {
+        // Guardar datos antes de salir (por seguridad)
+        Indexpersona.guardarEnArchivo();
+        Aportes.guardarEnArchivo();
         System.out.println("Gracias por su visita: ");
     }
 
@@ -56,6 +59,15 @@ public class Index {
     }
 
     public static void main(String[] args) {
+        // Cargar datos desde archivos CSV al iniciar
+        Indexpersona.cargarDesdeArchivo();
+        Aportes.cargarDesdeArchivo();
+
+        // Ejecutar flujo normal (login -> inicio)
         IndexLogin.login();
+
+        // Guardar por si acaso al terminar
+        Indexpersona.guardarEnArchivo();
+        Aportes.guardarEnArchivo();
     }
 }
