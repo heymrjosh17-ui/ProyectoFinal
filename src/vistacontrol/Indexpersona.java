@@ -10,7 +10,7 @@ import utils.Utilitarios;
 public class Indexpersona {
 
     private static final Lectura leer = new Lectura();
-    private static final int [] MAX = new int [100];
+    private static final int[] MAX = new int[100];
 
     private static int[] codigos = new int[100];
     private static String[] nombres = new String[100];
@@ -22,20 +22,31 @@ public class Indexpersona {
     private static String[] emails = new String[100];
 
     private static int cont = 0;
-    
+
     //VALIDAR CODIGO
     public static int validarCodigo(int codigo) {
         for (int i = 0; i < cont; i++) {
             if (codigos[i] == codigo) {
-                return i; 
+                return i;
             }
         }
-        return -1; 
+        return -1;
     }
-    public static String obtenerNombre(int pos){
+
+    public static int validardni(int dni) {
+        for (int i = 0; i < cont; i++) {
+            if (dnis[i] == dni) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static String obtenerNombre(int pos) {
         return nombres[pos] + " " + paternos[pos] + " " + maternos[pos];
-        
+
     }
+
     public static void cositas2() {
         Utilitarios.limpiarPantalla();
         Utilitarios.imprimirSeparador();
@@ -63,7 +74,7 @@ public class Indexpersona {
                 case 2 ->
                     listar();
                 case 3 ->
-                    cont = EliminarPersona.ejecutar(codigos, nombres, paternos, maternos, dnis, fonos, dires, emails, cont);
+                    cont = Eliminarpersona.ejecutar(codigos, nombres, paternos, maternos, dnis, fonos, dires, emails, cont);
                 case 4 ->
                     System.out.println("Regresando al menu principal");
                 default ->
@@ -74,8 +85,18 @@ public class Indexpersona {
 
     public static void agregar() {
         System.out.println("\n--- INGRESE LOS DATOS ---");
-        System.out.print("Ingrese código: ");
-        codigos[cont] = leer.entero();
+        int codigo;
+        do {
+            System.out.print("Ingrese código: ");
+            codigo = leer.entero();
+
+            if (validarCodigo(codigo) != -1) {
+                System.out.println("Error: El código ya existe.");
+            }
+
+        } while (validarCodigo(codigo) != -1);
+
+        codigos[cont] = codigo;
 
         System.out.print("Ingrese nombre: ");
         nombres[cont] = leer.cadena();
@@ -86,8 +107,18 @@ public class Indexpersona {
         System.out.print("Ingrese apellido materno: ");
         maternos[cont] = leer.cadena();
 
-        System.out.print("Ingrese DNI: ");
-        dnis[cont] = leer.entero();
+        int dni;
+        do {
+            System.out.print("Ingrese DNI: ");
+            dni = leer.entero();
+
+            if (validardni(dni) != -1) {
+                System.out.println("Error: El DNI ya está registrado.");
+            }
+
+        } while (validardni(dni) != -1);
+
+        dnis[cont] = dni;
 
         System.out.print("Ingrese teléfono: ");
         fonos[cont] = leer.entero();
@@ -97,6 +128,7 @@ public class Indexpersona {
 
         System.out.print("Ingrese email: ");
         emails[cont] = leer.cadena();
+
         cont++;
         System.out.println("¡Persona agregada exitosamente!");
     }
