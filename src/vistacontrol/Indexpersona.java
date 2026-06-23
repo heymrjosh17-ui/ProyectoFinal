@@ -2,6 +2,7 @@ package vistacontrol;
 
 import utils.Lectura;
 import utils.Utilitarios;
+import java.io.*;
 
 /**
  *
@@ -74,7 +75,7 @@ public class Indexpersona {
                 case 2 ->
                     listar();
                 case 3 ->
-                    cont = Eliminarpersona.ejecutar(codigos, nombres, paternos, maternos, dnis, fonos, dires, emails, cont);
+                    cont = Eliminarpersona.ejecutar(codigos, nombres, paternos, maternos, dnis, fonos, dires, emails, cont); guardarEnArchivo();
                 case 4 ->
                     System.out.println("Regresando al menu principal");
                 default ->
@@ -130,6 +131,7 @@ public class Indexpersona {
         emails[cont] = leer.cadena();
 
         cont++;
+        guardarEnArchivo();
         System.out.println("¡Persona agregada exitosamente!");
     }
 
@@ -148,5 +150,73 @@ public class Indexpersona {
             }
         }
         System.out.println("Volviendo al menu principal");
+    }
+
+    // Persistence: save/load to CSV
+    public static void guardarEnArchivo() {
+        File f = new File("personas.csv");
+        try (PrintWriter pw = new PrintWriter(new FileWriter(f))) {
+            for (int i = 0; i < cont; i++) {
+                String nombre = nombres[i] == null ? "" : nombres[i];
+                String paterno = paternos[i] == null ? "" : paternos[i];
+                String materno = maternos[i] == null ? "" : maternos[i];
+                String dir = dires[i] == null ? "" : dires[i];
+                String email = emails[i] == null ? "" : emails[i];
+                pw.printf("%d;%s;%s;%s;%d;%d;%s;%s%n", codigos[i], escapeCSV(nombre), escapeCSV(paterno), escapeCSV(materno), dnis[i], fonos[i], escapeCSV(dir), escapeCSV(email));
+            }
+        } catch (IOException e) {
+            System.out.println("Error guardando personas: " + e.getMessage());
+        }
+    }
+
+    public static void cargarDesdeArchivo() {
+        File f = new File("personas.csv");
+        if (!f.exists()) {
+            return;
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String line;
+            cont = 0;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] parts = line.split(";", -1);
+                if (parts.length >= 8) {
+                    try {
+                        codigos[cont] = Integer.parseInt(parts[0]);
+                    } catch (NumberFormatException ex) {
+                        codigos[cont] = 0;
+                    }
+                    nombres[cont] = unescapeCSV(parts[1]);
+                    paternos[cont] = unescapeCSV(parts[2]);
+                    maternos[cont] = unescapeCSV(parts[3]);
+                    try {
+                        dnis[cont] = parts[4].isEmpty() ? 0 : Integer.parseInt(parts[4]);
+                    } catch (NumberFormatException ex) {
+                        dnis[cont] = 0;
+                    }
+                    try {
+                        fonos[cont] = parts[5].isEmpty() ? 0 : Integer.parseInt(parts[5]);
+                    } catch (NumberFormatException ex) {
+                        fonos[cont] = 0;
+                    }
+                    dires[cont] = unescapeCSV(parts[6]);
+                    emails[cont] = unescapeCSV(parts[7]);
+                    cont++;
+                    if (cont >= codigos.length) break;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error cargando personas: " + e.getMessage());
+        }
+    }
+
+    private static String escapeCSV(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace(";", "\\;");
+    }
+
+    private static String unescapeCSV(String s) {
+        if (s == null) return "";
+        return s.replace("\\;", ";").replace("\\\\", "\\");
     }
 }
