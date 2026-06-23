@@ -2,6 +2,7 @@ package vistacontrol;
 
 import utils.Lectura;
 import utils.Utilitarios;
+import java.io.*;
 
 /**
  *
@@ -59,6 +60,7 @@ public class Aportes {
         iglesias[cont] = leer.cadena();
 
         cont++;
+        guardarEnArchivo();
 
         System.out.println("✅ Aporte registrado");
 
@@ -99,6 +101,70 @@ public class Aportes {
             }
         }
         return false;
+    }
+
+    // Persistence: save/load to CSV
+    public static void guardarEnArchivo() {
+        File f = new File("aportes.csv");
+        try (PrintWriter pw = new PrintWriter(new FileWriter(f))) {
+            for (int i = 0; i < cont; i++) {
+                String fecha = fechas[i] == null ? "" : fechas[i];
+                String dia = dias[i] == null ? "" : dias[i];
+                String iglesia = iglesias[i] == null ? "" : iglesias[i];
+                pw.printf("%d;%s;%s;%s;%.2f;%.2f%n", codigosPersona[i], escapeCSV(fecha), escapeCSV(dia), escapeCSV(iglesia), diezmos[i], ofrendas[i]);
+            }
+        } catch (IOException e) {
+            System.out.println("Error guardando aportes: " + e.getMessage());
+        }
+    }
+
+    public static void cargarDesdeArchivo() {
+        File f = new File("aportes.csv");
+        if (!f.exists()) {
+            return;
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String line;
+            cont = 0;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] parts = line.split(";", -1);
+                if (parts.length >= 6) {
+                    try {
+                        codigosPersona[cont] = Integer.parseInt(parts[0]);
+                    } catch (NumberFormatException ex) {
+                        codigosPersona[cont] = 0;
+                    }
+                    fechas[cont] = unescapeCSV(parts[1]);
+                    dias[cont] = unescapeCSV(parts[2]);
+                    iglesias[cont] = unescapeCSV(parts[3]);
+                    try {
+                        diezmos[cont] = parts[4].isEmpty() ? 0.0 : Double.parseDouble(parts[4]);
+                    } catch (NumberFormatException ex) {
+                        diezmos[cont] = 0.0;
+                    }
+                    try {
+                        ofrendas[cont] = parts[5].isEmpty() ? 0.0 : Double.parseDouble(parts[5]);
+                    } catch (NumberFormatException ex) {
+                        ofrendas[cont] = 0.0;
+                    }
+                    cont++;
+                    if (cont >= codigosPersona.length) break;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error cargando aportes: " + e.getMessage());
+        }
+    }
+
+    private static String escapeCSV(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace(";", "\\;");
+    }
+
+    private static String unescapeCSV(String s) {
+        if (s == null) return "";
+        return s.replace("\\;", ";").replace("\\\\", "\\");
     }
 
     //MENÚ
