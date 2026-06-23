@@ -2,7 +2,7 @@ package vistacontrol;
 
 import utils.Lectura;
 
-public class EliminarPersona {
+public class Eliminarpersona {
 
     private static final Lectura leer = new Lectura();
 
@@ -26,7 +26,7 @@ public class EliminarPersona {
         int cod = leer.entero();
         if (Aportes.tieneAportes(cod)) {
             System.out.println("No se puede eliminar a la persona porque tiene aportes registrados.");
-        return cont;
+            return cont;
         }
         int indice = -1;
         // BUSCAR PERSONA

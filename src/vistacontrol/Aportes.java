@@ -22,7 +22,7 @@ public class Aportes {
     private static String[] iglesias = new String[100];
 
     private static int cont = 0;
-    
+
     //REGISTRAR APORTE
     public static void registrar() {
 
@@ -30,17 +30,17 @@ public class Aportes {
             System.out.println("No hay espacio.");
             return;
         }
-        
+
         System.out.println("Ingrese código de persona: ");
         int cod = leer.entero();
-        
+
         int indice = Indexpersona.validarCodigo(cod);
         if (indice == -1) {
             System.out.println("Persona no encontrada. ");
             return;
         }
         codigosPersona[cont] = cod;
-        
+
         System.out.println("--- REGISTRAR APORTE ---");
 
         System.out.print("Diezmo: ");
@@ -74,11 +74,10 @@ public class Aportes {
         for (int i = 0; i < cont; i++) {
             System.out.println("----------------------");
             System.out.println("Código Persona: " + codigosPersona[i]);
-            
+
             int pos = Indexpersona.validarCodigo(codigosPersona[i]);
             if (pos != -1) {
-                System.out.println("Nombre: " +
-                        Indexpersona.obtenerNombre(pos));
+                System.out.println("Nombre: " + Indexpersona.obtenerNombre(pos));
             }
             System.out.println("Aporte #" + (i + 1));
             System.out.println("Diezmo: " + diezmos[i]);
@@ -91,9 +90,9 @@ public class Aportes {
             System.out.println("Total: " + total);
         }
     }
-    
+
     //METODO CLAVE PARA EVITAR ERROR
-    public static boolean tieneAportes(int codigo){
+    public static boolean tieneAportes(int codigo) {
         for (int i = 0; i < cont; i++) {
             if (codigosPersona[i] == codigo) {
                 return true;
@@ -101,11 +100,12 @@ public class Aportes {
         }
         return false;
     }
+
     //MENÚ
     public static void menuAporte() {
         int opcion;
         do {
-            Utilitarios.imprimirSeparador();
+                Utilitarios.imprimirSeparador();
             System.out.println("""
                                GESTION DE APORTES
                                1. Registrar aporte
@@ -129,5 +129,4 @@ public class Aportes {
             }
         } while (opcion != 3);
     }
-
 }
