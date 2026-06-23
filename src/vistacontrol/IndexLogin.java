@@ -4,7 +4,7 @@ import utils.Lectura;
 
 /**
  *
- * @author heyjhonna
+ * @author heyjhonnita
  */
 public class IndexLogin {
 
